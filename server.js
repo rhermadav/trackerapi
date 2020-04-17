@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+
 require('dotenv').config();
 
 const app = express();
@@ -17,8 +18,9 @@ app.use(express.json());
 // connection.once('open', () => {
 //   console.log("MongoDB database connection established successfully");
 // })
-mongoose.connect('mongodb://localhost/tracker', {useNewUrlParser: true ,useUnifiedTopology: true})
-    .then(()=> console.log('connected to mongodb...'))
+ 
+mongoose.connect(process.env.ATLAS_URI, {useNewUrlParser: true ,useUnifiedTopology: true, useCreateIndex: true})
+    .then(()=> console.log(`connected to mongodb...}`))
     .catch((err) => console.error('could not connect to mongodb '));
 
 const exercisesRouter = require('./routes/exercises');
@@ -27,6 +29,8 @@ const usersRouter = require('./routes/users');
 app.use('/exercises', exercisesRouter);
 app.use('/users', usersRouter);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });
+
+module.exports = server;
